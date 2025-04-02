@@ -41,6 +41,13 @@ def compute_by_gradient_descent(x, y):
 
   return w, b
 
+# This code generates synthetic data representing house sizes and prices.
+# It then fits a linear regression model using gradient descent to determine:
+#   - The slope (w)
+#   - The intercept (b)
+# Finally, it makes predictions using the learned model and visualizes the results:
+#   - Plots the actual data points.
+#   - Plots the fitted regression line.
 
 # === 1. Sample Data ===
 # Generate data with 1 feature, 100 samples, and some noise
