@@ -4,7 +4,7 @@ import matplotlib.animation as animation
 from sklearn.datasets import make_regression
 
 # === 1. Sample Data ===
-x, y = make_regression(n_samples=1000, n_features=1, noise=100, random_state=42)
+x, y = make_regression(n_samples=100, n_features=1, noise=10, random_state=42)
 x = x.flatten()  # Flatten X to 1D
 y = y / 10       # Scale y for visualization
 
