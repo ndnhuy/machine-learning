@@ -51,9 +51,13 @@ def compute_by_gradient_descent(x, y):
 
 # === 1. Sample Data ===
 # Generate data with 1 feature, 100 samples, and some noise
-x, y = make_regression(n_samples=1000, n_features=1, noise=100, random_state=42)
+x, y = make_regression(n_samples=10, n_features=1, noise=100, random_state=42)
 x = x.flatten()  # Flatten X to 1D for consistency
 y = y / 10  # Scale y to match the original price range
+
+# print x and y
+print(f"x: {x}")
+print(f"y: {y}")
 
 # w, b = compute_linear_regression_params(x, y)
 w, b = compute_by_gradient_descent(x, y)
