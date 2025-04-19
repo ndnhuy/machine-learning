@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 from house_price_predictor import HousePricePredictor
-from closed_form_linear_regression import ClosedFormLinearRegression
-from gradient_descent_linear_regression import GradientDescentLinearRegression
+from models.closed_form_linear_regression import ClosedFormLinearRegression
+from models.gradient_descent_linear_regression import GradientDescentLinearRegression
 from sklearn.datasets import make_regression
 
 
@@ -64,11 +64,11 @@ class TestHousePricePredictor(unittest.TestCase):
 
         self.assertAlmostEqual(
             predictor.predict(sizes[0]), prices[0],
-            delta=5000,
+            delta=0.5,
         )
         self.assertAlmostEqual(
             predictor.predict(sizes[1]), prices[1],
-            delta=5000,
+            delta=0.5,
         )
 
     def test_predict_with_gradient_descent_method(self):

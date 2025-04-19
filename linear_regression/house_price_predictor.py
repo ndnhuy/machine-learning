@@ -1,6 +1,6 @@
 import numpy as np
-from linear_regression_interface import LinearRegression
-from closed_form_linear_regression import ClosedFormLinearRegression
+from models.linear_regression_interface import LinearRegression
+from models.closed_form_linear_regression import ClosedFormLinearRegression
 
 
 class HousePricePredictor:
