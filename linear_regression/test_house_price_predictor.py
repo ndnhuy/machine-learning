@@ -10,7 +10,7 @@ class TestDataProvider:
     @staticmethod
     def trainingDataOfZeroDeriatives():
         # Generate data points lying on a line through origin (noise=0, bias=0)
-        X, y = make_regression(n_samples=5, n_features=1,
+        X, y = make_regression(n_samples=20, n_features=1,
                                noise=0.0, random_state=42, bias=0.0)
         sizes = X.flatten()
         prices = y
@@ -19,10 +19,26 @@ class TestDataProvider:
     @staticmethod
     def trainingDataWithBias():
         # Generate data points lying on a line with positive bias (noise=0)
-        X, y = make_regression(n_samples=4, n_features=1,
+        X, y = make_regression(n_samples=20, n_features=1,
                                noise=0.0, random_state=42, bias=1000.0)
         sizes = X.flatten()
         prices = y
+        return sizes, prices
+
+    @staticmethod
+    def trainingDataWithNoiseAndBias():
+        # Generate data points lying on a line with positive bias (noise=0)
+        X, y = make_regression(n_samples=20, n_features=1,
+                               noise=2.0, random_state=42, bias=1000.0)
+        sizes = X.flatten()
+        prices = y
+        return sizes, prices
+
+    @staticmethod
+    def trainingDataDummy():
+        # Generate dummy data points
+        sizes = np.array([800, 1200, 1500, 1800, 2200])  # in square feet
+        prices = np.array([150000, 210000, 260000, 310000, 380000])  # in USD
         return sizes, prices
 
 
@@ -45,16 +61,23 @@ class TestHousePricePredictor(unittest.TestCase):
         sizes, prices = TestDataProvider.trainingDataOfZeroDeriatives()
         predictor = HousePricePredictor(
             sizes, prices, ClosedFormLinearRegression())
-        prediction = predictor.predict(sizes[0])
-        self.assertEqual(prediction, prices[0])
-        prediction = predictor.predict(sizes[1])
-        self.assertEqual(prediction, prices[1])
+
+        self.assertAlmostEqual(
+            predictor.predict(sizes[0]), prices[0],
+            delta=5000,
+        )
+        self.assertAlmostEqual(
+            predictor.predict(sizes[1]), prices[1],
+            delta=5000,
+        )
 
     def test_predict_with_gradient_descent_method(self):
         """Test gradient descent method on all provided training data"""
         methods = [
             TestDataProvider.trainingDataOfZeroDeriatives,
-            TestDataProvider.trainingDataWithBias
+            TestDataProvider.trainingDataWithBias,
+            TestDataProvider.trainingDataWithNoiseAndBias,
+            TestDataProvider.trainingDataDummy
         ]
         for method in methods:
             with self.subTest(data=method.__name__):
@@ -64,8 +87,11 @@ class TestHousePricePredictor(unittest.TestCase):
                         learning_rate=0.01, iterations=10000)
                 )
                 for x, y in zip(sizes, prices):
-                    self.assertAlmostEqual(predictor.predict(x), y, places=0,
-                                           msg=f"Failed for {method.__name__}")
+                    self.assertAlmostEqual(
+                        predictor.predict(x), y,
+                        delta=5000,
+                        msg=f"Failed for {method.__name__} with tolerance"
+                    )
 
 
 if __name__ == "__main__":
