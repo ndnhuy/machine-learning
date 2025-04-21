@@ -1,3 +1,4 @@
+from matplotlib import ticker
 import numpy as np
 import matplotlib.pyplot as plt
 from model_visualizer import ModelVisualizer
@@ -39,6 +40,11 @@ class PNGModelVisualizer(ModelVisualizer):
             The predicted values from the model
         """
         plt.figure(figsize=(10, 6))
+
+        ax = plt.gca()
+        ax.get_yaxis().set_major_formatter(
+            ticker.StrMethodFormatter('${x:,.0f}'))
+
         plt.scatter(x, y, label='Data')
         plt.plot(x, y_pred, color='red', label='Fitted Line')
         plt.xlabel(self.x_label)
