@@ -27,9 +27,9 @@ class TestDataProvider:
 
     @staticmethod
     def trainingDataWithNoiseAndBias():
-        # Generate data points lying on a line with positive bias (noise=0)
+        # Generate data points lying on a line with positive bias and noise
         X, y = make_regression(n_samples=20, n_features=1,
-                               noise=2.0, random_state=42, bias=1000.0)
+                               noise=100, random_state=42, bias=1000.0)
         sizes = X.flatten()
         prices = y
         return sizes, prices
