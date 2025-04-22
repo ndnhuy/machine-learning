@@ -1,7 +1,8 @@
 from matplotlib import ticker
 import numpy as np
 import matplotlib.pyplot as plt
-from model_visualizer import ModelVisualizer
+
+from visualizer.model_visualizer import ModelVisualizer
 
 
 class PNGModelVisualizer(ModelVisualizer):

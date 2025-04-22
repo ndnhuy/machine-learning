@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
-from house_price_predictor import HousePricePredictor
-from models.closed_form_linear_regression import ClosedFormLinearRegression
-from models.gradient_descent_linear_regression import GradientDescentLinearRegression
+from linear_regression.house_price_predictor import HousePricePredictor
+from linear_regression.models.closed_form_linear_regression import ClosedFormLinearRegression
+from linear_regression.models.gradient_descent_linear_regression import GradientDescentLinearRegression
 from sklearn.datasets import make_regression
 
 
