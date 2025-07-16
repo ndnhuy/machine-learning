@@ -1,4 +1,4 @@
-from matplotlib import ticker
+from matplotlib import animation, ticker
 import numpy as np
 import matplotlib.pyplot as plt
 

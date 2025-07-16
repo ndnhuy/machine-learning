@@ -11,6 +11,13 @@ class GradientDescentLinearRegression(LinearRegression):
         self.learning_rate = learning_rate
         self.iterations = iterations
         self.normalize_features = normalize_features
+        self.iterationConsumer = lambda w, b: None
+
+    def setIterationConsumer(self, consumer_fn):
+        """
+        Set the function to consume (w, b) after each iteration.
+        """
+        self.iterationConsumer = consumer_fn
 
     def fit(self, x: np.ndarray, y: np.ndarray) -> tuple[float, float]:
         # Convert to numpy arrays
@@ -38,13 +45,14 @@ class GradientDescentLinearRegression(LinearRegression):
             return self.doGradientDescent(x_arr, y_arr)
 
     def doGradientDescent(self, x: np.ndarray, y: np.ndarray) -> tuple[float, float]:
-        w_norm = 0.0
-        b_norm = 0.0
+        w = 0.0
+        b = 0.0
         n = len(x)
         for _ in range(self.iterations):
-            y_pred = w_norm * x + b_norm
-            dw_norm = (-2 / n) * np.sum(x * (y - y_pred))
-            db_norm = (-2 / n) * np.sum(y - y_pred)
-            w_norm -= self.learning_rate * dw_norm
-            b_norm -= self.learning_rate * db_norm
-        return w_norm, b_norm
+            y_pred = w * x + b
+            dw = (-2 / n) * np.sum(x * (y - y_pred))
+            db = (-2 / n) * np.sum(y - y_pred)
+            w -= self.learning_rate * dw
+            b -= self.learning_rate * db
+            self.iterationConsumer(w, b)
+        return w, b

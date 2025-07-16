@@ -2,9 +2,10 @@ import unittest
 import numpy as np
 import os
 import matplotlib.pyplot as plt
-from visualizer.png_model_visualizer import PNGModelVisualizer
 from sklearn.datasets import make_regression
 from linear_regression.models.closed_form_linear_regression import ClosedFormLinearRegression
+from linear_regression.models.gradient_descent_linear_regression import GradientDescentLinearRegression
+from visualizer.gif_model_visualizer import GifModelVisualizer
 
 
 class TestDataProvider:
@@ -26,8 +27,7 @@ class TestDataProvider:
         return X.flatten(), y
 
 
-class TestPNGModelVisualizer(unittest.TestCase):
-
+class TestGifModelVisualizer(unittest.TestCase):
     def setUp(self):
         """Set up test data and model"""
         self.sizes, self.prices = TestDataProvider.simple_house_data()
@@ -43,23 +43,29 @@ class TestPNGModelVisualizer(unittest.TestCase):
         # Close any open matplotlib figures
         plt.close('all')
 
-    def test_visualization_saves_to_png_file(self):
-        """Test that the PNG visualizer correctly saves a file"""
-        output_path = os.path.join(self.test_dir, "test_visualization.png")
-
-        # Create visualizer
-        visualizer = PNGModelVisualizer(
+    def test_visualization_saves_to_gif_file(self):
+        output_path = os.path.join(self.test_dir, "test_gif_visualization.gif")
+        visualizer = GifModelVisualizer(
             output_path=output_path,
+            x=self.sizes,
+            y=self.prices,
             x_label="House Size (sq ft)",
             y_label="Price ($)"
         )
 
-        model = ClosedFormLinearRegression()
+        model = GradientDescentLinearRegression(
+            learning_rate=0.1,
+            iterations=100
+        )
+        model.setIterationConsumer(lambda w, b: visualizer.visualize(
+            self.sizes, self.prices, w * self.sizes + b))
         w, b = model.fit(self.sizes, self.prices)
         y_pred = w * self.sizes + b
 
         # Generate visualization
-        visualizer.visualize(self.sizes, self.prices, y_pred)
+        # visualizer.visualize(self.sizes, self.prices, y_pred)
+        # visualizer.visualize(self.sizes, self.prices, y_pred)
+        visualizer.saveToFile()
 
         # Check that file exists
         self.assertTrue(os.path.exists(output_path),
@@ -69,7 +75,7 @@ class TestPNGModelVisualizer(unittest.TestCase):
         self.assertGreater(os.path.getsize(
             output_path), 0, "PNG file is empty")
 
-        print(f"Test visualization saved to: {output_path}")
+        print(f"Test GIF visualizer PNG saved to: {output_path}")
 
 
 if __name__ == "__main__":
