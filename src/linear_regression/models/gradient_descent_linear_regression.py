@@ -34,17 +34,26 @@ class GradientDescentLinearRegression(LinearRegression):
             else:
                 x_norm = x_arr.copy()
 
-            w_norm, b_norm = self.doGradientDescent(x_norm, y_arr)
+            def rescale_params(w_norm, b_norm):
+                """
+                Rescale the parameters back to the original scale.
+                """
+                w = w_norm / x_std
+                b = b_norm - w_norm * x_mean / x_std
+                return w, b
+
+            w_norm, b_norm = self.doGradientDescent(
+                x_norm, y_arr, rescale_params)
 
             # Rescale the parameters back to the original scale
-            w = w_norm / x_std
-            b = b_norm - w_norm * x_mean / x_std
-            return w, b
+            # w = w_norm / x_std
+            # b = b_norm - w_norm * x_mean / x_std
+            return rescale_params(w_norm, b_norm)
         else:
             # Skip normalization if the flag is False
             return self.doGradientDescent(x_arr, y_arr)
 
-    def doGradientDescent(self, x: np.ndarray, y: np.ndarray) -> tuple[float, float]:
+    def doGradientDescent(self, x: np.ndarray, y: np.ndarray, rescale_fn) -> tuple[float, float]:
         w = 0.0
         b = 0.0
         n = len(x)
@@ -54,5 +63,7 @@ class GradientDescentLinearRegression(LinearRegression):
             db = (-2 / n) * np.sum(y - y_pred)
             w -= self.learning_rate * dw
             b -= self.learning_rate * db
-            self.iterationConsumer(w, b)
+
+            w_rescaled, b_rescaled = rescale_fn(w, b)
+            self.iterationConsumer(w_rescaled, b_rescaled)
         return w, b

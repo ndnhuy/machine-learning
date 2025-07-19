@@ -54,17 +54,14 @@ class TestGifModelVisualizer(unittest.TestCase):
         )
 
         model = GradientDescentLinearRegression(
-            learning_rate=0.1,
-            iterations=100
+            learning_rate=0.2,
+            iterations=100,
+            normalize_features=True
         )
         model.setIterationConsumer(lambda w, b: visualizer.visualize(
             self.sizes, self.prices, w * self.sizes + b))
         w, b = model.fit(self.sizes, self.prices)
-        y_pred = w * self.sizes + b
 
-        # Generate visualization
-        # visualizer.visualize(self.sizes, self.prices, y_pred)
-        # visualizer.visualize(self.sizes, self.prices, y_pred)
         visualizer.saveToFile()
 
         # Check that file exists
