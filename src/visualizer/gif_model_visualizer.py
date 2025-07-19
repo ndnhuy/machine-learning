@@ -7,30 +7,44 @@ from visualizer.model_visualizer import ModelVisualizer
 
 class GifModelVisualizer(ModelVisualizer):
     """
-    Implementation of ModelVisualizer that exports visualizations to PNG files.
+    Implementation of ModelVisualizer that exports visualizations to GIF files.
     """
 
     def __init__(self, x: np.ndarray, y: np.ndarray, output_path: str, x_label: str = "X", y_label: str = "Y"):
         """
-        Initialize the PNG model visualizer.
+        Initialize the GIF model visualizer.
 
         Parameters:
         -----------
+        x : np.ndarray
+            The input features (e.g., house sizes)
+        y : np.ndarray
+            The actual target values (e.g., house prices)
         output_path : str
-            The file path where the PNG will be saved
+            The file path where the GIF will be saved
         x_label : str, optional
             The label for the x-axis, defaults to "X"
         y_label : str, optional
             The label for the y-axis, defaults to "Y"
         """
+        self.x = x
+        self.y = y
         self.output_path = output_path
         self.x_label = x_label
         self.y_label = y_label
-        self.x = x
-        self.y = y
         self.y_pred_history = []
 
-    def saveToFile(self):
+    def visualize(self, x: np.ndarray, y: np.ndarray, y_pred: np.ndarray) -> None:
+        # For backward compatibility, update x and y if called
+        self.x = x
+        self.y = y
+        self.accept(y_pred)
+
+    def accept(self, y_hat: np.ndarray) -> None:
+        # Append y_hat to the history array
+        self.y_pred_history.append(y_hat.copy())
+
+    def show(self) -> None:
         fig, ax = plt.subplots()
         ax.scatter(self.x, self.y, label='Data')
         line, = ax.plot([], [], 'r-', label='Fitted Line')
@@ -58,7 +72,3 @@ class GifModelVisualizer(ModelVisualizer):
             blit=True
         )
         ani.save(self.output_path, writer="pillow")
-
-    def visualize(self, x: np.ndarray, y: np.ndarray, y_pred: np.ndarray) -> None:
-        # Append y_pred to the history array
-        self.y_pred_history.append(y_pred.copy())

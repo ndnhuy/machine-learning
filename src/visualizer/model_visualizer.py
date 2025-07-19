@@ -22,3 +22,26 @@ class ModelVisualizer(ABC):
             The predicted values from the model
         """
         pass
+
+    @abstractmethod
+    def accept(self, y_hat: np.ndarray) -> None:
+        """
+        Processes the predicted values from the model.
+
+        Parameters:
+        -----------
+        y_hat : np.ndarray
+            The predicted values output by the model.
+
+        Notes:
+        ------
+        If called multiple times, the implementation may store them to
+        display results as an animation or only store the final one to show the final output.
+        """
+
+    @abstractmethod
+    def show(self) -> None:
+        """
+        Displays the visualizations.
+        """
+        pass

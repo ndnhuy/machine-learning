@@ -30,8 +30,14 @@ class InteractiveGifModelVisualizer(ModelVisualizer):
         self.y_pred_history = []
 
     def visualize(self, x: np.ndarray, y: np.ndarray, y_pred: np.ndarray) -> None:
-        # Append y_pred to the history array
-        self.y_pred_history.append(y_pred.copy())
+        # For backward compatibility, update x and y if called
+        self.x = x
+        self.y = y
+        self.accept(y_pred)
+
+    def accept(self, y_hat: np.ndarray) -> None:
+        # Append y_hat to the history array
+        self.y_pred_history.append(y_hat.copy())
 
     def show(self):
         fig, ax = plt.subplots()
@@ -61,3 +67,4 @@ class InteractiveGifModelVisualizer(ModelVisualizer):
             blit=True
         )
         plt.show()  # Show the animation interactively
+        plt.close(fig)  # Close the figure after showing to prevent accumulation

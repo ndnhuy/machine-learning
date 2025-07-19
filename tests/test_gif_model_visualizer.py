@@ -46,9 +46,9 @@ class TestGifModelVisualizer(unittest.TestCase):
     def test_visualization_saves_to_gif_file(self):
         output_path = os.path.join(self.test_dir, "test_gif_visualization.gif")
         visualizer = GifModelVisualizer(
+            self.sizes,
+            self.prices,
             output_path=output_path,
-            x=self.sizes,
-            y=self.prices,
             x_label="House Size (sq ft)",
             y_label="Price ($)"
         )
@@ -58,11 +58,10 @@ class TestGifModelVisualizer(unittest.TestCase):
             iterations=100,
             normalize_features=True
         )
-        model.setIterationConsumer(lambda w, b: visualizer.visualize(
-            self.sizes, self.prices, w * self.sizes + b))
+        model.setIterationConsumer(lambda w, b: visualizer.accept(w * self.sizes + b))
         w, b = model.fit(self.sizes, self.prices)
 
-        visualizer.saveToFile()
+        visualizer.show()
 
         # Check that file exists
         self.assertTrue(os.path.exists(output_path),

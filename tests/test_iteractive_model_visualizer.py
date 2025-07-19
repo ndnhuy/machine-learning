@@ -29,7 +29,7 @@ class TestDataProvider:
         return X.flatten(), y
 
 
-class TestPNGModelVisualizer(unittest.TestCase):
+class TestIteractiveModelVisualizer(unittest.TestCase):
 
     def setUp(self):
         """Set up test data and model"""
@@ -47,11 +47,10 @@ class TestPNGModelVisualizer(unittest.TestCase):
         plt.close('all')
 
     def test_visualization_by_iteractive_ui(self):
-        """Test that the PNG visualizer correctly saves a file"""
-        output_path = os.path.join(self.test_dir, "test_visualization.png")
-
-        # Create visualizer
+        # Create visualizer with x and y in constructor
         visualizer = InteractiveModelVisualizer(
+            self.sizes,
+            self.prices,
             x_label="House Size (sq ft)",
             y_label="Price ($)"
         )
@@ -60,13 +59,14 @@ class TestPNGModelVisualizer(unittest.TestCase):
         w, b = model.fit(self.sizes, self.prices)
         y_pred = w * self.sizes + b
 
-        # Generate visualization
-        visualizer.visualize(self.sizes, self.prices, y_pred)
+        visualizer.accept(y_pred)
+        visualizer.show()
+        # visualizer.visualize(self.sizes, self.prices, y_pred)
 
     def test_visualization_animation(self):
         visualizer = InteractiveGifModelVisualizer(
-            x=self.sizes,
-            y=self.prices,
+            self.sizes,
+            self.prices,
             x_label="House Size (sq ft)",
             y_label="Price ($)"
         )
@@ -76,8 +76,7 @@ class TestPNGModelVisualizer(unittest.TestCase):
             iterations=100,
             normalize_features=True
         )
-        model.setIterationConsumer(lambda w, b: visualizer.visualize(
-            self.sizes, self.prices, w * self.sizes + b))
+        model.setIterationConsumer(lambda w, b: visualizer.accept(w * self.sizes + b))
         w, b = model.fit(self.sizes, self.prices)
 
         visualizer.show()

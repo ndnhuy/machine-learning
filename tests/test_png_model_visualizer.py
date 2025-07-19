@@ -47,8 +47,10 @@ class TestPNGModelVisualizer(unittest.TestCase):
         """Test that the PNG visualizer correctly saves a file"""
         output_path = os.path.join(self.test_dir, "test_visualization.png")
 
-        # Create visualizer
+        # Create visualizer with x and y in constructor
         visualizer = PNGModelVisualizer(
+            self.sizes,
+            self.prices,
             output_path=output_path,
             x_label="House Size (sq ft)",
             y_label="Price ($)"
@@ -58,8 +60,8 @@ class TestPNGModelVisualizer(unittest.TestCase):
         w, b = model.fit(self.sizes, self.prices)
         y_pred = w * self.sizes + b
 
-        # Generate visualization
-        visualizer.visualize(self.sizes, self.prices, y_pred)
+        visualizer.accept(y_pred)
+        visualizer.show()
 
         # Check that file exists
         self.assertTrue(os.path.exists(output_path),

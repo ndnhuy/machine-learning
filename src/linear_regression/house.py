@@ -75,4 +75,5 @@ visualizer = PNGModelVisualizer(
     x_label="Size (m²)",
     y_label="Price ($1000s)"
 )
-visualizer.visualize(x, y, y_pred)
+visualizer.accept(y_pred)
+visualizer.show()
