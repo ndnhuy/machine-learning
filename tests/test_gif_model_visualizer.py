@@ -69,9 +69,9 @@ class TestGifModelVisualizer(unittest.TestCase):
 
         # Check that file is not empty
         self.assertGreater(os.path.getsize(
-            output_path), 0, "PNG file is empty")
+            output_path), 0, "GIF file is empty")
 
-        print(f"Test GIF visualizer PNG saved to: {output_path}")
+        print(f"Test GIF visualizer GIF saved to: {output_path}")
 
 
 if __name__ == "__main__":

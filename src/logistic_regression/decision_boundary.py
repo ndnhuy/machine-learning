@@ -2,11 +2,13 @@ from logistic_regression.main import sigmoid
 import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib
-from logistic_regression.compute_cost_function import compute_cost_logistic
+from logistic_regression.compute_functions import compute_cost_logistic
 matplotlib.use('TkAgg')  # Use TkAgg backend for interactive window
 
 
+# m examples with n features (m=6, n=2)
 X = np.array([[0.5, 1.5], [1, 1], [1.5, 0.5], [3, 0.5], [2, 2], [1, 2.5]])
+# .reshape(-1, 1) is a quick way to turn a flat list into a column vector.
 y = np.array([0, 0, 0, 1, 1, 1]).reshape(-1, 1)
 # plot the points
 plt.figure(figsize=(4, 4))

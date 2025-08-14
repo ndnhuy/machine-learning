@@ -72,7 +72,7 @@ class TestIteractiveModelVisualizer(unittest.TestCase):
         )
 
         model = GradientDescentLinearRegression(
-            learning_rate=0.2,
+            learning_rate=0.1,
             iterations=100,
             normalize_features=True
         )
