@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.datasets import make_classification, make_regression
 
 from logistic_regression.gradient_logistic_regression import GradientLogisticRegression
 from logistic_regression.main import sigmoid
@@ -81,16 +82,37 @@ def test_batch_gradient_descent():
 # pytest tests/logistic_regression/test_logistric_regression.py::test_batch_gradient_descent_with_animation -vs
 def test_batch_gradient_descent_with_animation():
     # Example data
-    X = np.array([[0.5, 1.5], [1, 1], [1.5, 0.5], [3, 0.5], [2, 2], [1, 2.5]])
-    y = np.array([0, 0, 0, 1, 1, 1])
+    # X = np.array([[0.5, 1.5], [1, 1], [1.5, 0.5], [3, 0.5], [2, 2], [1, 2.5]])
+    # y = np.array([0, 0, 0, 1, 1, 1])
+
+    # Generate a synthetic binary classification dataset
+    X, y = make_classification(
+        n_samples=200,      # number of samples
+        n_features=2,       # number of features (for 2D visualization)
+        n_redundant=0,      # no redundant features
+        n_clusters_per_class=2,
+        flip_y=0.2,        # small label noise
+        class_sep=0.7,      # separation between classes
+        random_state=42     # reproducibility
+    )
 
     model = GradientLogisticRegression(learning_rate=0.5)
+
+    def scatter_strategy(ax, x0_arr, x1_arr):
+        for x0, x1, label in zip(x0_arr, x1_arr, y):
+            if label == 1:
+                ax.scatter(x0, x1, color='#FF2222', marker='x', s=200, linewidths=4,
+                           label='y=1' if 'y=1' not in ax.get_legend_handles_labels()[1] else "")
+            else:
+                ax.scatter(x0, x1, facecolors='none', edgecolors='#0099FF', marker='o', s=200,
+                           linewidths=3, label='y=0' if 'y=0' not in ax.get_legend_handles_labels()[1] else "")
 
     visualizer = InteractiveGifModelVisualizer(
         X[:, 0],
         X[:, 1],
         x_label="x0",
-        y_label="x1"
+        y_label="x1",
+        scatter_strategy=scatter_strategy,
     )
 
     def visualizer_callback(w, b):

@@ -5,12 +5,14 @@ import matplotlib.pyplot as plt
 from visualizer.model_visualizer import ModelVisualizer
 
 
+
 class InteractiveGifModelVisualizer(ModelVisualizer):
     """
     Implementation of ModelVisualizer that displays gradient descent progress as an interactive animation.
+    Now supports a customizable scatter strategy for labeling points.
     """
 
-    def __init__(self, x: np.ndarray, y: np.ndarray, x_label: str = "X", y_label: str = "Y"):
+    def __init__(self, x: np.ndarray, y: np.ndarray, x_label: str = "X", y_label: str = "Y", scatter_strategy=None):
         """
         Initialize the interactive GIF model visualizer.
 
@@ -24,6 +26,8 @@ class InteractiveGifModelVisualizer(ModelVisualizer):
             The label for the x-axis, defaults to "X"
         y_label : str, optional
             The label for the y-axis, defaults to "Y"
+        scatter_strategy : callable, optional
+            A function(ax, x, y) that plots the data points on the axes. If None, uses the default scatter strategy.
         """
         self.x = x
         self.y = y
@@ -31,6 +35,17 @@ class InteractiveGifModelVisualizer(ModelVisualizer):
         self.y_label = y_label
         self.x_pred_history = []
         self.y_pred_history = []
+        if scatter_strategy is not None:
+            self.scatter_strategy = scatter_strategy
+        else:
+            self.scatter_strategy = self.default_scatter_strategy
+
+    @staticmethod
+    def default_scatter_strategy(ax, x, y):
+        """
+        Default scatter strategy: simple scatter plot with one color/marker.
+        """
+        ax.scatter(x, y, label='Data')
 
     def visualize(self, x: np.ndarray, y: np.ndarray, y_pred: np.ndarray) -> None:
         # For backward compatibility, update x and y if called
@@ -49,19 +64,14 @@ class InteractiveGifModelVisualizer(ModelVisualizer):
 
     def show(self):
         fig, ax = plt.subplots()
-        ax.scatter(self.x, self.y, label='Data')
+        # Use the scatter strategy to plot the data points
+        self.scatter_strategy(ax, self.x, self.y)
         line, = ax.plot([], [], 'r-', label='Fitted Line')
         ax.set_xlabel(self.x_label)
         ax.set_ylabel(self.y_label)
         ax.set_title("Gradient Descent Progress (Interactive)")
         ax.grid(True)
         ax.legend()
-
-        # Set axes limits for clarity
-        # xmin, xmax = self.x.min() - 1, self.x.max() + 1
-        # ymin, ymax = self.y.min() - 5, self.y.max() + 5
-        # ax.set_xlim(xmin, xmax)
-        # ax.set_ylim(ymin, ymax)
 
         def update(frame):
             line.set_data(
